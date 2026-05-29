@@ -26,22 +26,39 @@ int main()
     Paddle rightPaddle = {WINDOW_WIDTH - 45,
                           WINDOW_HEIGHT / 2 - PADDLE_HEIGHT / 2,
                           PADDLE_WIDTH, PADDLE_HEIGHT};
+    Ball ball =
+{
+    WINDOW_WIDTH / 2,
+    WINDOW_HEIGHT / 2,
+    5,
+    5,
+    15
+};
 
     int running = 1;
     SDL_Event event;
 
     while (running)
-    {
-        handleInput(&event, &leftPaddle, &rightPaddle, &running);
+{
+    handleInput(&event, &leftPaddle, &rightPaddle, &running);
 
-        const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+    const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
 
-        updatePaddles(keyboardState, &leftPaddle, &rightPaddle);
+    updatePaddles(keyboardState,
+                  &leftPaddle,
+                  &rightPaddle);
 
-        render(renderer, &leftPaddle, &rightPaddle);
+    updateBall(&ball,
+               &leftPaddle,
+               &rightPaddle);
 
-        SDL_Delay(16);
-    }
+    render(renderer,
+           &leftPaddle,
+           &rightPaddle,
+           &ball);
+
+    SDL_Delay(16);
+}
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
