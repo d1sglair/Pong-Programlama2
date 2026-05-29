@@ -26,9 +26,26 @@ void handleInput(SDL_Event *event,
 void updatePaddles(const Uint8 *keyboardState,
                    Paddle *leftPaddle,
                    Paddle *rightPaddle);
+                   typedef struct
+{
+    float x;
+    float y;
+    float velX;
+    float velY;
+    int size;
+
+} Ball;
+
+
+
+
+void updateBall(Ball *ball,
+                Paddle *leftPaddle,
+                Paddle *rightPaddle);
 
 void render(SDL_Renderer *renderer,
             Paddle *leftPaddle,
-            Paddle *rightPaddle);
+            Paddle *rightPaddle,
+            Ball *ball);
 
 #endif
