@@ -5,10 +5,10 @@
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
-
 #define PADDLE_WIDTH 15
 #define PADDLE_HEIGHT 100
 #define PADDLE_SPEED 8
+#define WIN_SCORE 5
 
 typedef struct
 {
@@ -18,6 +18,15 @@ typedef struct
     int height;
 } Paddle;
 
+typedef struct
+{
+    float x;
+    float y;
+    float velX;
+    float velY;
+    int size;
+} Ball;
+
 void handleInput(SDL_Event *event,
                  Paddle *leftPaddle,
                  Paddle *rightPaddle,
@@ -26,22 +35,12 @@ void handleInput(SDL_Event *event,
 void updatePaddles(const Uint8 *keyboardState,
                    Paddle *leftPaddle,
                    Paddle *rightPaddle);
-                   typedef struct
-{
-    float x;
-    float y;
-    float velX;
-    float velY;
-    int size;
-
-} Ball;
-
-
-
 
 void updateBall(Ball *ball,
                 Paddle *leftPaddle,
                 Paddle *rightPaddle);
+
+void resetBall(Ball *ball);
 
 void render(SDL_Renderer *renderer,
             Paddle *leftPaddle,
