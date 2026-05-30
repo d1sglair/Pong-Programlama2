@@ -12,6 +12,16 @@ Right Player:
 UP ARROW - Move Up
 DOWN ARROW - Move Down
 
+## Features
+
+- Two player Pong
+- Paddle movement
+- Ball physics
+- Collision detection
+- Score system
+- Winner detection
+- Restart with R key
+
 ## Build
 
 make
@@ -19,3 +29,5 @@ make
 ## Run
 
 ./pong
+
+
