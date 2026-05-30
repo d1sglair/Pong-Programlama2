@@ -18,47 +18,139 @@ int main()
         WINDOW_HEIGHT,
         SDL_WINDOW_SHOWN);
 
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    if (window == NULL)
+    {
+        printf("Window creation failed!\n");
+        SDL_Quit();
+        return 1;
+    }
 
-    Paddle leftPaddle = {30, WINDOW_HEIGHT / 2 - PADDLE_HEIGHT / 2,
-                         PADDLE_WIDTH, PADDLE_HEIGHT};
+    SDL_Renderer *renderer = SDL_CreateRenderer(
+        window,
+        -1,
+        SDL_RENDERER_ACCELERATED);
 
-    Paddle rightPaddle = {WINDOW_WIDTH - 45,
-                          WINDOW_HEIGHT / 2 - PADDLE_HEIGHT / 2,
-                          PADDLE_WIDTH, PADDLE_HEIGHT};
-    Ball ball =
-{
-    WINDOW_WIDTH / 2,
-    WINDOW_HEIGHT / 2,
-    5,
-    5,
-    15
-};
+    if (renderer == NULL)
+    {
+        printf("Renderer creation failed!\n");
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        return 1;
+    }
+
+    Paddle leftPaddle = {
+        30,
+        WINDOW_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+        PADDLE_WIDTH,
+        PADDLE_HEIGHT
+    };
+
+    Paddle rightPaddle = {
+        WINDOW_WIDTH - 45,
+        WINDOW_HEIGHT / 2 - PADDLE_HEIGHT / 2,
+        PADDLE_WIDTH,
+        PADDLE_HEIGHT
+    };
+
+    Ball ball = {
+        WINDOW_WIDTH / 2,
+        WINDOW_HEIGHT / 2,
+        5,
+        5,
+        15
+    };
+
+    int leftScore = 0;
+    int rightScore = 0;
+    int gameOver = 0;
 
     int running = 1;
     SDL_Event event;
 
     while (running)
+    {
+        handleInput(&event, &leftPaddle, &rightPaddle, &running);
+
+        const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+
+        if (keyboardState[SDL_SCANCODE_R])
+        {
+            leftScore = 0;
+            rightScore = 0;
+            gameOver = 0;
+
+            resetBall(&ball);
+
+            printf("Game restarted!\n");
+        }
+
+        updatePaddles(keyboardState,
+                      &leftPaddle,
+                      &rightPaddle);
+
+        if (!gameOver)
+        {
+            updateBall(&ball,
+                       &leftPaddle,
+                       &rightPaddle);
+
+            if (ball.x + ball.size < 0)
+            {
+                rightScore++;
+
+                printf("Player1: %d | Player2: %d\n",
+                       leftScore,
+                       rightScore);
+
+                resetBall(&ball);
+            }
+
+            if (ball.x > WINDOW_WIDTH)
+            {
+                leftScore++;
+
+                printf("Player1: %d | Player2: %d\n",
+                       leftScore,
+                       rightScore);
+
+                resetBall(&ball);
+            }
+
+            if (leftScore >= WIN_SCORE)
+            {
+                printf("PLAYER 1 WINS!\n");
+                gameOver = 1;
+            }
+
+            if (rightScore >= WIN_SCORE)
+            {
+                printf("PLAYER 2 WINS!\n");
+                gameOver = 1;
+            }
+        }
+        char title[100];
+
+if (gameOver)
 {
-    handleInput(&event, &leftPaddle, &rightPaddle, &running);
-
-    const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
-
-    updatePaddles(keyboardState,
-                  &leftPaddle,
-                  &rightPaddle);
-
-    updateBall(&ball,
-               &leftPaddle,
-               &rightPaddle);
-
-    render(renderer,
-           &leftPaddle,
-           &rightPaddle,
-           &ball);
-
-    SDL_Delay(16);
+    if (leftScore >= WIN_SCORE)
+        sprintf(title, "Pong Game - PLAYER 1 WINS! Press R to restart");
+    else
+        sprintf(title, "Pong Game - PLAYER 2 WINS! Press R to restart");
 }
+else
+{
+    sprintf(title, "Pong Game - Player1: %d | Player2: %d", leftScore, rightScore);
+}
+
+SDL_SetWindowTitle(window, title);
+
+        render(renderer,
+               &leftPaddle,
+               &rightPaddle,
+               &ball);
+
+        SDL_Delay(16);
+    }
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
