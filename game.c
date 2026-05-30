@@ -54,18 +54,22 @@ void updateBall(Ball *ball,
     }
 
     if (ball->x <= leftPaddle->x + leftPaddle->width &&
-        ball->y + ball->size >= leftPaddle->y &&
-        ball->y <= leftPaddle->y + leftPaddle->height)
-    {
-        ball->velX *= -1;
-    }
+    ball->x + ball->size >= leftPaddle->x &&
+    ball->y + ball->size >= leftPaddle->y &&
+    ball->y <= leftPaddle->y + leftPaddle->height)
+{
+    ball->velX *= -1;
+    ball->x = leftPaddle->x + leftPaddle->width;
+}
 
-    if (ball->x + ball->size >= rightPaddle->x &&
-        ball->y + ball->size >= rightPaddle->y &&
-        ball->y <= rightPaddle->y + rightPaddle->height)
-    {
-        ball->velX *= -1;
-    }
+if (ball->x + ball->size >= rightPaddle->x &&
+    ball->x <= rightPaddle->x + rightPaddle->width &&
+    ball->y + ball->size >= rightPaddle->y &&
+    ball->y <= rightPaddle->y + rightPaddle->height)
+{
+    ball->velX *= -1;
+    ball->x = rightPaddle->x - ball->size;
+}
 }
 
 void render(SDL_Renderer *renderer,
@@ -104,4 +108,13 @@ void render(SDL_Renderer *renderer,
     SDL_RenderFillRect(renderer, &ballRect);
 
     SDL_RenderPresent(renderer);
+}
+
+void resetBall(Ball *ball)
+{
+    ball->x = WINDOW_WIDTH / 2;
+    ball->y = WINDOW_HEIGHT / 2;
+
+    ball->velX *= -1;
+    ball->velY = 5;
 }
